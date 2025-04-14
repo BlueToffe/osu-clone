@@ -6,6 +6,8 @@
 // - describe what you did to take this project "above and beyond"
 
 
+let gameState = "mainMenu";
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }

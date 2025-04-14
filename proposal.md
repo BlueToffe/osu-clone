@@ -13,5 +13,5 @@ it is a rhythm game where you click circles to the beat of a song
 ### Nice To Have List
 - map editor
 - performance based scoring system (the pp system)
-- 
+- online leaderboard
 
