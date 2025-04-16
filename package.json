@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "change-file-extension": "^1.0.0",
+    "decompress": "^4.2.1"
+  }
+}

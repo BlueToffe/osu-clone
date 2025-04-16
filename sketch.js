@@ -4,6 +4,15 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
+import changeFileExtension from 'change-file-extension';
+
+const decompress = require('decompress');
+
+changeFileExtension("mapFile.osk", ".zip");
+
+decompress("mapFile.zip", "maps").then(files => {
+  console.log("done");
+});
 
 
 let gameState = "mainMenu";
