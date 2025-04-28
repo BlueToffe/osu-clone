@@ -1,11 +1,9 @@
+const zl = require("zip-lib");
 
-import decompress from "decompress";
-
-let gameState = "mainMenu";
+zl.extract("/mapFile.zip", "/maps/");
 
 function setup() {
   createCanvas(windowWidth, windowHeight);  
-  decompress("mapFile.zip", "maps");
 }
 
 function draw() {
