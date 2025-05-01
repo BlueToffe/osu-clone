@@ -3,11 +3,25 @@
 //https://osu.ppy.sh/wiki/en/Beatmap/Approach_rate
 
 let osuScaleY;
-let osuScaleX;
+let osuScaleX; 
+let mapInfo;
+
+class MapData {
+  constructor() {
+    this.AR;
+    this.circleSize;
+    this.overallDifficulty;
+    this.hpDrain;
+    this.mapArray;
+  }
+
+
+}
 
 function preload() {
   hitCircleImage = loadImage("/hitcircles/hitcircle.png");
   approachCircleImage = loadImage("/hitcircles/approachcircle.png");
+  loadStrings("/maps/GenryuuKaiko/higantorrent.txt", loadMap); 
 }
 
 function setup() {
@@ -18,5 +32,8 @@ function setup() {
 function draw() {
   background(220);
   image(hitCircleImage, width/2, height/2);
-  rect(0, 0, );
+}
+
+function loadMap(data) {
+  mapInfo = data;
 }
