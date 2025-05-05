@@ -2,8 +2,9 @@
 //https://osu.ppy.sh/wiki/en/Beatmap/Circle_size
 //https://osu.ppy.sh/wiki/en/Beatmap/Approach_rate
 
-let mapInfo;
-
+let hitCircleInfo;
+let apporachRate;
+let mapDifficuty;
 class MapData {
   constructor() {
     this.apporachRate;
@@ -13,10 +14,7 @@ class MapData {
     this.mapArray;
   }
 
-  addData(infoPointer, data) {
-    if (ApproachRate in data[infoPointer]) {
-    }
-  }
+
 }
 
 function preload() {
@@ -36,7 +34,9 @@ function draw() {
 }
 
 function loadMap(data) {
-  for (let mapStats in data) {
-    MapData.addData(mapStats, data);
+  for (let mapStats = 0; mapStats < data.length; mapStats++) {
+    if (data[mapStats] === "[Difficulty]") {
+      mapDifficuty = data.splice(mapStats + 1, 6);
+    }
   }
 }
