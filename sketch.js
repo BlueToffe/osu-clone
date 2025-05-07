@@ -6,6 +6,7 @@
 
 let apporachRate;
 let mapDifficuty;
+let hitCircleLocation;
 let comboColours =  {
   Combo1: [184, 213, 255],
   Combo2: [231, 189, 255],
@@ -13,12 +14,18 @@ let comboColours =  {
   Combo4: [255, 194, 255],
 };
 
-class hitCircleInfo {
+class HitCircleInfo {
   constructor() {
-    this.objectString;
+    this.objectString = [];
   }
   // use split to section off the array into its part the from there wer will be assiging a pointer to object x and y
-  
+
+  findHitCircleLocation(hitObjects) {
+    for (let circlePointer = 0; circlePointer < hitObjects.length; circlePointer++) {
+      this.objectString.push(hitObjects[circlePointer].split(","));
+    }
+    return this.objectString;
+  }
 }
 
 function preload() {
@@ -35,8 +42,16 @@ function setup() {
 
 function draw() {
   background(220);
-  image(hitCircleImage, width/2, height/2);
-  image(hitCircleOverlay, width/2, height/2);
+
+  circle(mouseX, mouseY, 15);
+
+  image(hitCircleImage, Number(hitCircleLocation[0][0]) * 2, Number(hitCircleLocation[0][1]) * 2);
+
+  for (let hitCircleArrayPointer = 0; hitCircleArrayPointer < hitCircleLocation.length; hitCircleArrayPointer++) {
+    image(hitCircleImage, Number(hitCircleLocation[hitCircleArrayPointer][0]) * 2, Number(hitCircleLocation[hitCircleArrayPointer][1]) * 2);
+    image(hitCircleOverlay, hitCircleLocation[hitCircleArrayPointer][0] * 2, hitCircleLocation[hitCircleArrayPointer][1] * 2);
+    console.log("image loaded");
+  }
 }
 
 function loadMap(data) {
@@ -50,4 +65,8 @@ function loadMap(data) {
       hitCircles = data.splice(mapStats + 1, data.length - mapStats);
     }
   }
+
+
+  hitCircleLocation = new HitCircleInfo();
+  hitCircleLocation.findHitCircleLocation(hitCircles);
 }
