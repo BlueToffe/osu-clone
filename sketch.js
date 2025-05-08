@@ -2,11 +2,13 @@
 //https://osu.ppy.sh/wiki/en/Beatmap/Circle_size
 //https://osu.ppy.sh/wiki/en/Beatmap/Approach_rate
 
-
+const HIT_CIRCLE_BOUNDRY = 67;
 
 let apporachRate;
 let mapDifficuty;
 let hitCircleLocation;
+
+
 let comboColours =  {
   Combo1: [184, 213, 255],
   Combo2: [231, 189, 255],
@@ -29,30 +31,33 @@ class HitCircleInfo {
 }
 
 function preload() {
-  hitCircleImage = loadImage("/hitcircles/hitcircle.png");
-  hitCircleOverlay = loadImage("/hitcircles/hitcircleoverlay.png");
-  approachCircleImage = loadImage("/hitcircles/approachcircle.png");
+  hitCircleImage = loadImage("/skin/hitcircle.png");
+  hitCircleOverlay = loadImage("/skin/hitcircleoverlay.png");
+  approachCircleImage = loadImage("/skin/approachcircle.png");
+  cursorImage = loadImage("/skin/cursor.png");
   loadStrings("/maps/GenryuuKaiko/higantorrent.osu", loadMap); 
 }
 
 function setup() {
-  createCanvas(1024, 768);
+  createCanvas(1158, 902);
   imageMode(CENTER);
+  noCursor();
 }
 
 function draw() {
-  background(220);
+  background(0);
 
   circle(mouseX, mouseY, 15);
 
-  image(hitCircleImage, Number(hitCircleLocation[0][0]) * 2, Number(hitCircleLocation[0][1]) * 2);
+  // for (let hitCircleArrayPointer = 0; hitCircleArrayPointer < hitCircleLocation.length; hitCircleArrayPointer++) {
+  //   image(hitCircleImage, hitCircleLocation[hitCircleArrayPointer][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[hitCircleArrayPointer][1] * 2 + HIT_CIRCLE_BOUNDRY);
+  //   image(hitCircleOverlay, hitCircleLocation[hitCircleArrayPointer][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[hitCircleArrayPointer][1] * 2 + HIT_CIRCLE_BOUNDRY);
+  // }
 
-  for (let hitCircleArrayPointer = 0; hitCircleArrayPointer < hitCircleLocation.length; hitCircleArrayPointer++) {
-    image(hitCircleImage, Number(hitCircleLocation[hitCircleArrayPointer][0]) * 2, Number(hitCircleLocation[hitCircleArrayPointer][1]) * 2);
-    image(hitCircleOverlay, hitCircleLocation[hitCircleArrayPointer][0] * 2, hitCircleLocation[hitCircleArrayPointer][1] * 2);
-    console.log("image loaded");
-  }
+
 }
+
+
 
 function loadMap(data) {
   for (let mapStats = 0; mapStats < data.length; mapStats++) {
@@ -68,5 +73,5 @@ function loadMap(data) {
 
 
   hitCircleLocation = new HitCircleInfo();
-  hitCircleLocation.findHitCircleLocation(hitCircles);
+  hitCircleLocation = hitCircleLocation.findHitCircleLocation(hitCircles);
 }
