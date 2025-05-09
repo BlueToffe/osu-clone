@@ -3,11 +3,15 @@
 //https://osu.ppy.sh/wiki/en/Beatmap/Approach_rate
 
 const HIT_CIRCLE_BOUNDRY = 67;
+const CURSOR_PERCENTAGE = 0.85;
+const MAX_TRAIL_COUNT = 4;
 
+let cursorTrailArray = [];
+let lastMillis = 0;
+let cursorTrailDelay = 30;
 let apporachRate;
 let mapDifficuty;
 let hitCircleLocation;
-
 
 let comboColours =  {
   Combo1: [184, 213, 255],
@@ -35,6 +39,7 @@ function preload() {
   hitCircleOverlay = loadImage("/skin/hitcircleoverlay.png");
   approachCircleImage = loadImage("/skin/approachcircle.png");
   cursorImage = loadImage("/skin/cursor.png");
+  cursorTrailImage = loadImage("/skin/cursortrail.png");
   loadStrings("/maps/GenryuuKaiko/higantorrent.osu", loadMap); 
 }
 
@@ -42,12 +47,29 @@ function setup() {
   createCanvas(1158, 902);
   imageMode(CENTER);
   noCursor();
+  smooth();
 }
 
 function draw() {
   background(0);
 
-  circle(mouseX, mouseY, 15);
+  if (millis() - lastMillis > cursorTrailDelay) {
+    cursorTrailArray.push([]);
+    for (let trailposition = 0; trailposition < cursorTrailArray.length; trailposition++) {
+      cursorTrailArray[trailposition].push(mouseX, mouseY);
+    }
+    for (let trailPart = 0; trailPart < cursorTrailArray.length; trailPart++) {
+      image(cursorTrailImage, cursorTrailArray[trailPart][0], cursorTrailArray[trailPart][1], cursorImage.height * CURSOR_PERCENTAGE, cursorImage.width * CURSOR_PERCENTAGE);
+    }
+    
+    if (cursorTrailArray.length > MAX_TRAIL_COUNT) {
+      cursorTrailArray.shift();
+    }
+  }
+
+  image(cursorImage, mouseX, mouseY, cursorImage.height * CURSOR_PERCENTAGE, cursorImage.width * CURSOR_PERCENTAGE);
+
+
 
   // for (let hitCircleArrayPointer = 0; hitCircleArrayPointer < hitCircleLocation.length; hitCircleArrayPointer++) {
   //   image(hitCircleImage, hitCircleLocation[hitCircleArrayPointer][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[hitCircleArrayPointer][1] * 2 + HIT_CIRCLE_BOUNDRY);
