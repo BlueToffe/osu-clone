@@ -58,7 +58,6 @@ function setup() {
 function draw() {
   background(0);
 
-
   createHitCircles();
   updateCursor();
 
@@ -73,6 +72,7 @@ function draw() {
 
 
 function loadMap(data) {
+  // creates an array storing all map data
   for (let mapStats = 0; mapStats < data.length; mapStats++) {
     let previousSection = null;
     if (data[mapStats] === "[Difficulty]") {
@@ -90,7 +90,7 @@ function loadMap(data) {
 }
 
 function updateCursor() {
-
+  // updates and creates the cursor and cursor trail
   if (millis() - lastMillis > cursorTrailDelay) {
     cursorTrailArray.push([]);
     for (let trailposition = 0; trailposition < cursorTrailArray.length; trailposition++) {
