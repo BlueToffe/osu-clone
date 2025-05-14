@@ -4,7 +4,7 @@
 
 const HIT_CIRCLE_BOUNDRY = 67;
 const CURSOR_PERCENTAGE = 0.85;
-const MAX_TRAIL_COUNT = 4;
+const MAX_TRAIL_COUNT = 5;
 
 let cursorTrailArray = [];
 let lastMillis = 0;
@@ -45,7 +45,8 @@ function preload() {
   cursorTrailImage = loadImage("/skin/cursortrail.png");
   
   soundFormats("mp3");
-  mapSong = loadSound("/maps/GenryuuKaiko/GenryuuKaiko");
+  mapSong = loadSound("maps/GenryuuKaiko/GennryuuKaiko.mp3");
+  
 }
 
 function setup() {
@@ -53,6 +54,7 @@ function setup() {
   imageMode(CENTER);
   noCursor();
   smooth();
+  mapSong.play();
 }
 
 function draw() {
@@ -93,21 +95,20 @@ function updateCursor() {
   // updates and creates the cursor and cursor trail
   if (millis() - lastMillis > cursorTrailDelay) {
     cursorTrailArray.push([]);
-    for (let trailposition = 0; trailposition < cursorTrailArray.length; trailposition++) {
-      cursorTrailArray[trailposition].push(mouseX, mouseY);
-    }
-    
     for (let trailPart = 0; trailPart < cursorTrailArray.length; trailPart++) {
+      if (cursorTrailArray[trailPart].length < 2) {
+        cursorTrailArray[trailPart].push(mouseX, mouseY);
+      }
       image(cursorTrailImage, cursorTrailArray[trailPart][0], cursorTrailArray[trailPart][1], cursorImage.height * CURSOR_PERCENTAGE, cursorImage.width * CURSOR_PERCENTAGE);
-    }
-    
-    if (cursorTrailArray.length > MAX_TRAIL_COUNT) {
-      cursorTrailArray.shift();
+
+      if (cursorTrailArray.length >= MAX_TRAIL_COUNT) {
+        cursorTrailArray.shift();
+      }
     }
   }
+
   image(cursorImage, mouseX, mouseY, cursorImage.height * CURSOR_PERCENTAGE, cursorImage.width * CURSOR_PERCENTAGE);
 }
 
 function createHitCircles() {
-
 }
