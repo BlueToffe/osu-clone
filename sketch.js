@@ -12,6 +12,7 @@ let cursorTrailDelay = 30;
 let apporachRate;
 let mapDifficuty;
 let hitCircleLocation;
+let hitCirclesTimeStamps;
 
 let comboColours =  {
   Combo1: [184, 213, 255],
@@ -23,6 +24,7 @@ let comboColours =  {
 class HitCircleInfo {
   constructor() {
     this.objectString = [];
+    this.timeStampArray = [];
   }
   // use split to section off the array into its part the from there wer will be assiging a pointer to object x and y
 
@@ -31,6 +33,12 @@ class HitCircleInfo {
       this.objectString.push(hitObjects[circlePointer].split(","));
     }
     return this.objectString;
+  }
+
+  findHitCircleTimeStamp(hitObjects) {
+    for (let timePointer = 0; timePointer < hitObjects.length; timePointer++) {
+      hitCirclesTimeStamps.push(hitObjects[timePointer][2]);
+    }
   }
 }
 
@@ -89,6 +97,7 @@ function loadMap(data) {
 
   hitCircleLocation = new HitCircleInfo();
   hitCircleLocation = hitCircleLocation.findHitCircleLocation(hitCircles);
+  hitCircleLocation.findHitCircleTimeStamp(hitCircleLocation);
 }
 
 function updateCursor() {
@@ -111,4 +120,5 @@ function updateCursor() {
 }
 
 function createHitCircles() {
+
 }
