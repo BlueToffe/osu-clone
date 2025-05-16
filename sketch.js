@@ -13,6 +13,7 @@ let apporachRate;
 let mapDifficuty;
 let hitCircleLocation;
 let hitCirclesTimeStamps;
+let currentHitObject = 0;
 
 let comboColours =  {
   Combo1: [184, 213, 255],
@@ -35,10 +36,11 @@ class HitCircleInfo {
     return this.objectString;
   }
 
-  findHitCircleTimeStamp(hitObjects) {
+  findTimeStamp(hitObjects) {
     for (let timePointer = 0; timePointer < hitObjects.length; timePointer++) {
-      hitCirclesTimeStamps.push(hitObjects[timePointer][2]);
+      this.timeStampArray.push(hitObjects[timePointer][2]);
     }
+    return this.timeStampArray;
   }
 }
 
@@ -54,7 +56,6 @@ function preload() {
   
   soundFormats("mp3");
   mapSong = loadSound("maps/GenryuuKaiko/GennryuuKaiko.mp3");
-  
 }
 
 function setup() {
@@ -97,7 +98,9 @@ function loadMap(data) {
 
   hitCircleLocation = new HitCircleInfo();
   hitCircleLocation = hitCircleLocation.findHitCircleLocation(hitCircles);
-  hitCircleLocation.findHitCircleTimeStamp(hitCircleLocation);
+
+  hitCirclesTimeStamps = new HitCircleInfo();
+  hitCirclesTimeStamps = hitCirclesTimeStamps.findTimeStamp(hitCircleLocation);
 }
 
 function updateCursor() {
@@ -120,5 +123,13 @@ function updateCursor() {
 }
 
 function createHitCircles() {
-
+  if (Math.round(mapSong.currentTime() * 1000) > hitCirclesTimeStamps[0] - 450) {
+    image(hitCircleImage, hitCircleLocation[currentHitObject][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[currentHitObject][1] * 2 + HIT_CIRCLE_BOUNDRY);
+    image(hitCircleOverlay, hitCircleLocation[currentHitObject][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[currentHitObject][1] * 2 + HIT_CIRCLE_BOUNDRY);
+    
+    if (Math.round(mapSong.currentTime() * 1000) > hitCirclesTimeStamps[0]) {
+      currentHitObject++;
+      hitCirclesTimeStamps.shift();
+    }
+  }
 }
