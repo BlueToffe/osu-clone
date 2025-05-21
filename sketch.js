@@ -133,3 +133,8 @@ function createHitCircles() {
     }
   }
 }
+
+function mousePressed() {
+  mapSong.play();
+
+}
