@@ -14,6 +14,7 @@ let mapDifficuty;
 let hitCircleLocation;
 let hitCirclesTimeStamps;
 let currentHitObject = 0;
+let visableCircle = [];
 
 let comboColours =  {
   Combo1: [184, 213, 255],
@@ -44,6 +45,13 @@ class HitCircleInfo {
   }
 }
 
+class VisableHitCircles {
+  constructor(hitObject, time) {
+    this.objectLocation = hitObject;
+    this.objectTime = time;
+  }
+}
+
 function preload() {
   loadStrings("/maps/GenryuuKaiko/higantorrent.osu", loadMap); 
 
@@ -63,20 +71,14 @@ function setup() {
   imageMode(CENTER);
   noCursor();
   smooth();
-  mapSong.play();
 }
 
 function draw() {
   background(0);
 
   createHitCircles();
+  showHitCircles();
   updateCursor();
-
-  // for (let hitCircleArrayPointer = 0; hitCircleArrayPointer < hitCircleLocation.length; hitCircleArrayPointer++) {
-  //   image(hitCircleImage, hitCircleLocation[hitCircleArrayPointer][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[hitCircleArrayPointer][1] * 2 + HIT_CIRCLE_BOUNDRY);
-  //   image(hitCircleOverlay, hitCircleLocation[hitCircleArrayPointer][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[hitCircleArrayPointer][1] * 2 + HIT_CIRCLE_BOUNDRY);
-  // }
-
 
 }
 
@@ -123,18 +125,25 @@ function updateCursor() {
 }
 
 function createHitCircles() {
-  if (Math.round(mapSong.currentTime() * 1000) > hitCirclesTimeStamps[0] - 450) {
-    image(hitCircleImage, hitCircleLocation[currentHitObject][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[currentHitObject][1] * 2 + HIT_CIRCLE_BOUNDRY);
-    image(hitCircleOverlay, hitCircleLocation[currentHitObject][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[currentHitObject][1] * 2 + HIT_CIRCLE_BOUNDRY);
-    
-    if (Math.round(mapSong.currentTime() * 1000) > hitCirclesTimeStamps[0]) {
-      currentHitObject++;
-      hitCirclesTimeStamps.shift();
+  for (let time of hitCirclesTimeStamps) {
+    if (Math.round(mapSong.currentTime() * 1000) > time - 510) {
+      visableCircle.push(new VisableHitCircles(currentHitObject, time));
     }
   }
 }
 
 function mousePressed() {
   mapSong.play();
+}
 
+function showHitCircles() {
+  for (let circle of visableCircle) {
+    image(hitCircleImage, hitCircleLocation[currentHitObject][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[currentHitObject][1] * 2 + HIT_CIRCLE_BOUNDRY);
+    image(hitCircleOverlay, hitCircleLocation[currentHitObject][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[currentHitObject][1] * 2 + HIT_CIRCLE_BOUNDRY);
+    
+    if (Math.round(mapSong.currentTime() * 1000) > visableCircle.time + 120) {
+      currentHitObject++;
+      visableCircle.shift();
+    }
+  }
 }
