@@ -50,6 +50,10 @@ class VisableHitCircles {
     this.objectLocation = hitObject;
     this.objectTime = time;
   }
+
+  displayCircles() {
+   
+  }
 }
 
 function preload() {
@@ -128,6 +132,7 @@ function createHitCircles() {
   for (let time of hitCirclesTimeStamps) {
     if (Math.round(mapSong.currentTime() * 1000) > time - 510) {
       visableCircle.push(new VisableHitCircles(currentHitObject, time));
+      currentHitObject++;
     }
   }
 }
@@ -138,9 +143,9 @@ function mousePressed() {
 
 function showHitCircles() {
   for (let circle of visableCircle) {
-    image(hitCircleImage, hitCircleLocation[currentHitObject][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[currentHitObject][1] * 2 + HIT_CIRCLE_BOUNDRY);
-    image(hitCircleOverlay, hitCircleLocation[currentHitObject][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[currentHitObject][1] * 2 + HIT_CIRCLE_BOUNDRY);
-    
+    image(hitCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
+    image(hitCircleOverlay, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
+  
     if (Math.round(mapSong.currentTime() * 1000) > visableCircle.time + 120) {
       currentHitObject++;
       visableCircle.shift();
