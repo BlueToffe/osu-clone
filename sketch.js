@@ -128,27 +128,28 @@ function updateCursor() {
   image(cursorImage, mouseX, mouseY, cursorImage.height * CURSOR_PERCENTAGE, cursorImage.width * CURSOR_PERCENTAGE);
 }
 
-function createHitCircles() {
-  for (let time of hitCirclesTimeStamps) {
-    if (Math.round(mapSong.currentTime() * 1000) > time - 510) {
-      visableCircle.push(new VisableHitCircles(currentHitObject, time));
-      currentHitObject++;
-    }
-  }
-}
-
 function mousePressed() {
   mapSong.play();
 }
 
+function createHitCircles() {
+  if (Math.round(mapSong.currentTime() * 1000) > hitCirclesTimeStamps[0] - 510) {
+    visableCircle.push(new VisableHitCircles(currentHitObject, hitCirclesTimeStamps[0]));
+    currentHitObject++;
+    hitCirclesTimeStamps.shift();
+  }
+}
+
 function showHitCircles() {
   for (let circle of visableCircle) {
+    // if (Math.round(mapSong.currentTime() * 1000) > circle.time - 510) {
     image(hitCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
     image(hitCircleOverlay, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
-  
-    if (Math.round(mapSong.currentTime() * 1000) > visableCircle.time + 120) {
-      currentHitObject++;
+    console.log("circle");
+    // }
+    if (Math.round(mapSong.currentTime() * 1000) > circle.time + 120) {
       visableCircle.shift();
+      currentHitObject++;
     }
   }
 }
