@@ -81,7 +81,9 @@ function draw() {
   background(0);
 
   createHitCircles();
-  showHitCircles();
+  if (visableCircle.length > 0) {  
+    showHitCircles();
+  }
   updateCursor();
 
 }
@@ -141,15 +143,11 @@ function createHitCircles() {
 }
 
 function showHitCircles() {
+  if (Math.round(mapSong.currentTime() * 1000) > int(visableCircle[0].objectTime) + 120) {
+    visableCircle.shift();
+  } 
   for (let circle of visableCircle) {
-    // if (Math.round(mapSong.currentTime() * 1000) > circle.time - 510) {
     image(hitCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
     image(hitCircleOverlay, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
-    console.log("circle");
-    // }
-    if (Math.round(mapSong.currentTime() * 1000) > circle.time + 120) {
-      visableCircle.shift();
-      currentHitObject++;
-    }
   }
 }
