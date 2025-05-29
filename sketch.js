@@ -50,10 +50,6 @@ class VisableHitCircles {
     this.objectLocation = hitObject;
     this.objectTime = time;
   }
-
-  displayCircles() {
-   
-  }
 }
 
 function preload() {
@@ -84,8 +80,8 @@ function draw() {
   if (visableCircle.length > 0) {  
     showHitCircles();
   }
-  updateCursor();
 
+  updateCursor();
 }
 
 
