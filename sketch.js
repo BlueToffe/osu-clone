@@ -142,8 +142,10 @@ function showHitCircles() {
   if (Math.round(mapSong.currentTime() * 1000) > int(visableCircle[0].objectTime) + 120) {
     visableCircle.shift();
   } 
+
   for (let circle of visableCircle) {
     image(hitCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
     image(hitCircleOverlay, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
+    image(approachCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, 134 + circle.objectTime - Math.round(mapSong.currentTime()) * 1000, circle.objectTime - Math.round(mapSong.currentTime()) * 1000);
   }
 }
