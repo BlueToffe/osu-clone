@@ -82,6 +82,9 @@ function draw() {
   }
 
   updateCursor();
+
+  fill("white");
+  text(frameRate(), 500, 500);
 }
 
 
@@ -130,6 +133,14 @@ function mousePressed() {
   mapSong.play();
 }
 
+function keyPressed() {
+  if (key === "j") {
+    mapSong.pause();
+
+  }
+
+}
+
 function createHitCircles() {
   if (Math.round(mapSong.currentTime() * 1000) > hitCirclesTimeStamps[0] - 510) {
     visableCircle.push(new VisableHitCircles(currentHitObject, hitCirclesTimeStamps[0]));
@@ -144,8 +155,8 @@ function showHitCircles() {
   } 
 
   for (let circle of visableCircle) {
+    image(approachCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, 137 + (circle.objectTime - Math.round(mapSong.currentTime() * 1000)), 137 + (circle.objectTime - Math.round(mapSong.currentTime() * 1000)));
     image(hitCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
     image(hitCircleOverlay, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
-    image(approachCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, 134 + circle.objectTime - Math.round(mapSong.currentTime()) * 1000, circle.objectTime - Math.round(mapSong.currentTime()) * 1000);
   }
 }
