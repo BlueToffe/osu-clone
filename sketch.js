@@ -134,11 +134,17 @@ function mousePressed() {
 }
 
 function keyPressed() {
-  if (key === "j") {
-    mapSong.pause();
-
+  if (key === "g") {
+    if (int(visableCircle[0].objectTime) > Math.round(mapSong.currentTime() * 1000) && mouseX < hitCircleLocation[currentHitObject][0] && mouseX > hitCircleLocation[currentHitObject][0] && mouseY < hitCircleLocation[currentHitObject][1] & mouseYhitCircleLocation[currentHitObject][1]) {
+      print("300");
+    }
   }
 
+  if (key === "h") {
+    if (int(visableCircle[0].objectTime) > Math.round(mapSong.currentTime() * 1000) && mouseX < hitCircleLocation[currentHitObject][0] && mouseX > hitCircleLocation[currentHitObject][0] && mouseY < hitCircleLocation[currentHitObject][1] & mouseYhitCircleLocation[currentHitObject][1]) {
+      print("300");
+    }
+  }
 }
 
 function createHitCircles() {
