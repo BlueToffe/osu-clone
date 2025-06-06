@@ -71,6 +71,7 @@ function setup() {
   imageMode(CENTER);
   noCursor();
   smooth();
+  rectMode(CENTER);
 }
 
 function draw() {
@@ -79,12 +80,14 @@ function draw() {
   createHitCircles();
   if (visableCircle.length > 0) {  
     showHitCircles();
+    rect(int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2), int(hitCircleLocation[visableCircle[0].objectLocation][1] * 2), HIT_CIRCLE_BOUNDRY * 2 , HIT_CIRCLE_BOUNDRY * 2);  
   }
 
   updateCursor();
 
   fill("white");
   text(frameRate(), 500, 500);
+  
 }
 
 
@@ -134,14 +137,14 @@ function keyPressed() {
     mapSong.play();
   }
 
-  if (keyIsDown(71)) {
-    if (mouseX < hitCircleLocation[circle.objectLocation][0] + 64) {
-      background("white");
-    }
+  if (keyCode === 16) {
+    mapSong.pause();
   }
 
-  if (keyIsDown(72)) {
-    
+  if ((keyIsDown(71) || keyIsDown(72)) && visableCircle.length > 0) {
+    if (mouseY <= int(hitCircleLocation[visableCircle[0].objectLocation][1] * 2) + HIT_CIRCLE_BOUNDRY && mouseY >= int(hitCircleLocation[visableCircle[0].objectLocation][1] * 2) - HIT_CIRCLE_BOUNDRY && mouseX <= int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2) + HIT_CIRCLE_BOUNDRY && mouseX >= int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2)  - HIT_CIRCLE_BOUNDRY) {
+      console.log("300");
+    }
   }
 }
 
