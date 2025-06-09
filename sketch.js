@@ -2,7 +2,7 @@
 //https://osu.ppy.sh/wiki/en/Beatmap/Circle_size
 //https://osu.ppy.sh/wiki/en/Beatmap/Approach_rate
 
-const HIT_CIRCLE_BOUNDRY = 67;
+const HIT_CIRCLE_BOUNDRY = 64;
 const CURSOR_PERCENTAGE = 0.85;
 const MAX_TRAIL_COUNT = 5;
 
@@ -80,7 +80,6 @@ function draw() {
   createHitCircles();
   if (visableCircle.length > 0) {  
     showHitCircles();
-    rect(int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2), int(hitCircleLocation[visableCircle[0].objectLocation][1] * 2), HIT_CIRCLE_BOUNDRY * 2 , HIT_CIRCLE_BOUNDRY * 2);  
   }
 
   updateCursor();
@@ -141,14 +140,16 @@ function keyPressed() {
     mapSong.pause();
   }
 
+  //detects
   if ((keyIsDown(71) || keyIsDown(72)) && visableCircle.length > 0) {
-    if (mouseY <= int(hitCircleLocation[visableCircle[0].objectLocation][1] * 2) + HIT_CIRCLE_BOUNDRY && mouseY >= int(hitCircleLocation[visableCircle[0].objectLocation][1] * 2) - HIT_CIRCLE_BOUNDRY && mouseX <= int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2) + HIT_CIRCLE_BOUNDRY && mouseX >= int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2)  - HIT_CIRCLE_BOUNDRY) {
-      console.log("300");
+    if (mouseX <= int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY) + HIT_CIRCLE_BOUNDRY && mouseX >= int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2) && mouseY <= int(hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY) + HIT_CIRCLE_BOUNDRY  && mouseY >= int(hitCircleLocation[visableCircle[0].objectLocation][1] * 2)) {
+      judgementTimer();
     }
   }
 }
 
 function createHitCircles() {
+  //adds objects to and array for visable objects
   if (Math.round(mapSong.currentTime() * 1000) > hitCirclesTimeStamps[0] - 510) {
     visableCircle.push(new VisableHitCircles(currentHitObject, hitCirclesTimeStamps[0]));
     currentHitObject++;
@@ -157,17 +158,20 @@ function createHitCircles() {
 }
 
 function showHitCircles() {
+  //goes through visableCircle array and displays the circles while staying inside the play field
   if (Math.round(mapSong.currentTime() * 1000) > int(visableCircle[0].objectTime) + 120) {
     visableCircle.shift();
   } 
 
   for (let circle of visableCircle) {
     image(approachCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, 137 + (circle.objectTime - Math.round(mapSong.currentTime() * 1000)), 137 + (circle.objectTime - Math.round(mapSong.currentTime() * 1000)));
-    image(hitCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
+    image(hitCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY );
     image(hitCircleOverlay, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
   }
 }
 
-function inputHandler() {
-  
+function judgementTimer() {
+  if (Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) >= 400 || Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) <= 400 ) {
+    console.log("miss");
+  }
 }
