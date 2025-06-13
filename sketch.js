@@ -86,18 +86,18 @@ class VisableHitCircles {
 }
 
 function preload() {
-  loadStrings("/maps/GenryuuKaiko/higantorrent.osu", loadMap); 
+  loadStrings("osu-clone/maps/GenryuuKaiko/higantorrent.osu", loadMap); 
 
-  hitCircleImage = loadImage("/skin/hitcircle.png");
-  hitCircleOverlay = loadImage("/skin/hitcircleoverlay.png");
-  approachCircleImage = loadImage("/skin/approachcircle.png");
+  hitCircleImage = loadImage("osu-clone/skin/hitcircle.png");
+  hitCircleOverlay = loadImage("osu-clone/skin/hitcircleoverlay.png");
+  approachCircleImage = loadImage("osu-clone/skin/approachcircle.png");
   
-  cursorImage = loadImage("/skin/cursor.png");
-  cursorTrailImage = loadImage("/skin/cursortrail.png");
+  cursorImage = loadImage("osu-clone/skin/cursor.png");
+  cursorTrailImage = loadImage("osu-clone/skin/cursortrail.png");
 
-  hit100Image = loadImage("/skin/hit100.png");
-  hit50Image = loadImage("/skin/hit50.png");
-  hit0Image = loadImage("/skin/hit0.png");
+  hit100Image = loadImage("osu-clone/skin/hit100.png");
+  hit50Image = loadImage("osu-clone/skin/hit50.png");
+  hit0Image = loadImage("osu-clone/skin/hit0.png");
   
   soundFormats("mp3");
   mapSong = loadSound("maps/GenryuuKaiko/GennryuuKaiko.mp3");
