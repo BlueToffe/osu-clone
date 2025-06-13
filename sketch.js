@@ -2,10 +2,16 @@
 //https://osu.ppy.sh/wiki/en/Beatmap/Circle_size
 //https://osu.ppy.sh/wiki/en/Beatmap/Approach_rate
 
+//show the hit judgment baised on frame cound as the animation will run for 60 frames and create and object to accomplish that
+
 const HIT_CIRCLE_BOUNDRY = 64;
 const CURSOR_PERCENTAGE = 0.85;
 const MAX_TRAIL_COUNT = 5;
 
+let missTotal = 0;
+let sixthTotal = 0;
+let thirdTotal = 0;
+let oneTotal = 0;
 let cursorTrailArray = [];
 let lastMillis = 0;
 let cursorTrailDelay = 30;
@@ -16,13 +22,12 @@ let hitCirclesTimeStamps;
 let currentHitObject = 0;
 let visableCircle = [];
 let hitJudgment = [];
+let comboColours = [[0, 202, 0], [18, 124, 255], [242, 24, 57], [255, 192, 0]];
+let newCombo = 0;
+let previousComboColour = 0;
 
-let comboColours =  {
-  Combo1: [0, 202, 0],
-  Combo2: [18, 124, 255],
-  Combo3: [242, 24, 57],
-  Combo4: [255, 192, 0],
-};
+let accuracy = (totalOne, totalTwo, totalThree, totalMiss) => ((300 * totalOne + 100 * totalOne + 50 * totalOne) / (300 * (totalOne + totalThree + totalTwo + totalMiss))) * 100;
+let clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
 class HitCircleInfo {
   constructor() {
@@ -47,9 +52,36 @@ class HitCircleInfo {
 }
 
 class VisableHitCircles {
-  constructor(hitObject, time) {
+  constructor(hitObject, time, comboColour) {
     this.objectLocation = hitObject;
     this.objectTime = time;
+    this.comboColour = this.changeComboColour(comboColour);
+    this.previousValue = this.comboColour;
+  }
+
+  changeComboColour(colourValue) {
+    if (colourValue === 2 || colourValue === 4 || colourValue === 5 || colourValue === 6) {
+      if (colourValue === 2) {
+        previousComboColour = 0;
+        return 0;
+      }
+      else if (colourValue === 4) {
+        previousComboColour = 1;
+        return 1;
+      }
+      else if (colourValue === 5) {
+        previousComboColour = 2;
+        return 2;
+      }
+      else if (colourValue === 6) {
+        previousComboColour = 3;
+        return 3;
+      }
+      
+    }
+    else {
+      return previousComboColour;
+    }
   }
 }
 
@@ -78,6 +110,7 @@ function setup() {
   smooth();
   rectMode(CENTER);
   outputVolume(0.03);
+  setBPM(173);
 }
 
 function draw() {
@@ -86,13 +119,13 @@ function draw() {
   createHitCircles();
   if (visableCircle.length > 0) {  
     showHitCircles();
-    showJudgment();
   }
 
   updateCursor();
 
   fill("white");
   text(frameRate(), 500, 500);
+  console.log(accuracy(oneTotal, thirdTotal, sixthTotal, missTotal));
   
 }
 
@@ -127,10 +160,8 @@ function updateCursor() {
       if (cursorTrailArray[trailPart].length < 2) {
         cursorTrailArray[trailPart].push(mouseX, mouseY);
       }
-      push();
-      tint(255, 160);
       image(cursorTrailImage, cursorTrailArray[trailPart][0], cursorTrailArray[trailPart][1], cursorImage.height * CURSOR_PERCENTAGE, cursorImage.width * CURSOR_PERCENTAGE);
-      pop();
+
       if (cursorTrailArray.length >= MAX_TRAIL_COUNT) {
         cursorTrailArray.shift();
       }
@@ -160,7 +191,7 @@ function keyPressed() {
 function createHitCircles() {
   //adds objects to and array for visable objects
   if (Math.round(mapSong.currentTime() * 1000) > hitCirclesTimeStamps[0] - 510) {
-    visableCircle.push(new VisableHitCircles(currentHitObject, hitCirclesTimeStamps[0]));
+    visableCircle.push(new VisableHitCircles(currentHitObject, hitCirclesTimeStamps[0], int(hitCircleLocation[currentHitObject][3])));
     currentHitObject++;
     hitCirclesTimeStamps.shift();
   }
@@ -169,15 +200,21 @@ function createHitCircles() {
 function showHitCircles() {
   //goes through visableCircle array and displays the circles while staying inside the play field
   if (Math.round(mapSong.currentTime() * 1000) > int(visableCircle[0].objectTime) + 120) {
+    missTotal++;
     visableCircle.shift();
   } 
 
   for (let circle of visableCircle) {
-    push();
-    tint(comboColours.Combo4[0], comboColours.Combo4[1], comboColours.Combo4[2]);
+    push(); 
+    if (visableCircle.length > 0) {
+      tint(comboColours[circle.comboColour][0], comboColours[circle.comboColour][1], comboColours[circle.comboColour][2]);
+    }
+    else {
+      tint(comboColours[previousComboColour][0], comboColours[previousComboColour][1], comboColours[previousComboColour][2]);
+    }
     image(approachCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, 137 + (circle.objectTime - Math.round(mapSong.currentTime() * 1000)), 137 + (circle.objectTime - Math.round(mapSong.currentTime() * 1000)));
     image(hitCircleImage, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY );
-    pop();
+    pop();  
     image(hitCircleOverlay, hitCircleLocation[circle.objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[circle.objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY);
   }
 }
@@ -187,31 +224,23 @@ function judgementTimer() {
     hitJudgment.push(hitCircleLocation[visableCircle[0].objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "miss");
     console.log(int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2) + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "100");
     visableCircle.shift();
+    missTotal++;
   }
   else if (Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) >= 120 || Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) <= -120 ) {
     hitJudgment.push(hitCircleLocation[visableCircle[0].objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "50");
     visableCircle.shift();
+    sixthTotal++;
   }
   else if (Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) >= 76 || Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) <= -76 ) {
     hitJudgment.push(int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2) + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "100");
     console.log(int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2) + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "100");
     visableCircle.shift();
+    thirdTotal++;
   }
   else if (Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) >= 16 || Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) <= -16 ) {
     console.log(int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2) + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "100");
     visableCircle.shift();
+    oneTotal++;
   }
 }
 
-function showJudgment() {
-  for (let judgements in hitJudgment) {
-    // if (judgements[2] === "miss") {
-    // }
-    // if (judgements[2] === "50") {
-    //   image(hit50Image, judgements[0], judgements[1]);
-    // }
-    // if (judgements[2] === "100") {
-    //   image(hit100Image, judgements[0], judgements[1]);;
-    // }
-  }
-}
