@@ -8,6 +8,9 @@ const HIT_CIRCLE_BOUNDRY = 64;
 const CURSOR_PERCENTAGE = 0.85;
 const MAX_TRAIL_COUNT = 5;
 
+let soft;
+let normal;
+let drum;
 let missTotal = 0;
 let sixthTotal = 0;
 let thirdTotal = 0;
@@ -26,7 +29,7 @@ let comboColours = [[0, 202, 0], [18, 124, 255], [242, 24, 57], [255, 192, 0]];
 let newCombo = 0;
 let previousComboColour = 0;
 
-let accuracy = (totalOne, totalTwo, totalThree, totalMiss) => ((300 * totalOne + 100 * totalOne + 50 * totalOne) / (300 * (totalOne + totalThree + totalTwo + totalMiss))) * 100;
+// let accuracy = (totalOne, totalTwo, totalThree, totalMiss) => ((300 * totalOne + 100 * totalOne + 50 * totalOne) / (300 * (totalOne + totalThree + totalTwo + totalMiss))) * 100;
 let clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
 class HitCircleInfo {
@@ -99,8 +102,11 @@ function preload() {
   hit50Image = loadImage("skin/hit50.png");
   hit0Image = loadImage("skin/hit0.png");
   
-  soundFormats("mp3");
+  soundFormats("mp3", "wav");
   mapSong = loadSound("maps/GenryuuKaiko/GennryuuKaiko.mp3");
+  soft = loadSound("skin/soft-hitnormal.wav");
+  drum = loadSound("skin/drum-hitfinish.wav");
+  normal = loadSound("skin/normal-hitwhistle.wav");
 }
 
 function setup() {
@@ -121,12 +127,18 @@ function draw() {
     showHitCircles();
   }
 
-  updateCursor();
+  if (!mapSong.isPlaying()) {
+    text("press enter to start and shift to pause", width/2, 500);
+    text("press g or h to click on the circle when the smaller circle encloses it", width/2, 550);
+  }
 
+  updateCursor();
   fill("white");
-  text(frameRate(), 500, 500);
-  console.log(accuracy(oneTotal, thirdTotal, sixthTotal, missTotal));
-  
+  text("accruacy" + str(accuracy()) + "%", width-60, 60, 25, 25);
+  text("300 " + oneTotal, width-60, 90, 25, 25);
+  text("100 " + thirdTotal, width-60, 120, 25, 25);
+  text("50 " + sixthTotal, width-60, 150, 25, 25);
+  text("miss " + missTotal, width-60, 180, 25, 25);
 }
 
 
@@ -221,26 +233,42 @@ function showHitCircles() {
 
 function judgementTimer() {
   if (Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) >= 121 || Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) <= -121 ) {
-    hitJudgment.push(hitCircleLocation[visableCircle[0].objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "miss");
-    console.log(int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2) + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "100");
     visableCircle.shift();
     missTotal++;
+    playHitsound();
   }
   else if (Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) >= 120 || Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) <= -120 ) {
-    hitJudgment.push(hitCircleLocation[visableCircle[0].objectLocation][0] * 2 + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "50");
     visableCircle.shift();
     sixthTotal++;
+    playHitsound();
   }
-  else if (Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) >= 76 || Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) <= -76 ) {
-    hitJudgment.push(int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2) + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "100");
-    console.log(int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2) + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "100");
+  else if (Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) >= 76 || Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) <= -76 ) {    
     visableCircle.shift();
     thirdTotal++;
+    playHitsound();
   }
   else if (Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) >= 16 || Math.round(visableCircle[0].objectTime - mapSong.currentTime() * 1000) <= -16 ) {
-    console.log(int(hitCircleLocation[visableCircle[0].objectLocation][0] * 2) + HIT_CIRCLE_BOUNDRY, hitCircleLocation[visableCircle[0].objectLocation][1] * 2 + HIT_CIRCLE_BOUNDRY, "100");
     visableCircle.shift();
     oneTotal++;
+    playHitsound();
   }
 }
 
+function accuracy() {
+  if (oneTotal + thirdTotal + sixthTotal  + missTotal === 0) {
+    return 100;
+  } 
+  else {
+  // eslint-disable-next-line no-extra-parens
+    return ((300 * oneTotal + 100 * thirdTotal + 50 * sixthTotal) / (300 * (oneTotal + thirdTotal + sixthTotal  + missTotal))) * 100;
+  }
+}
+
+function playHitsound() {
+  if (visableCircle.length <=  2) {
+    soft.play();
+  }
+  else if (visableCircle. length > 2) {
+    drum.play();
+  }
+}
